@@ -153,6 +153,8 @@ table {
 .tdata td:first-child {
     border-left: none;
     text-align: center;
+    font-size: 10px;
+    color: #999;
 }
 .tdata td:first-child+td {
     text-align: center;
