@@ -1,0 +1,10 @@
+# logs folder
+logs/
+
+.idea/
+
+# mp3 files
+
+upload/audio/*.mp3
+
+*.jpg

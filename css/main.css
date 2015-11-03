@@ -1,0 +1,164 @@
+html{
+    overflow-x: hidden;
+}
+html, body, #container{
+    height:100%;
+    margin:0;
+    padding:0;
+}
+
+body {
+    font: normal 12px 'trebuchet MS', 'Lucida sans', Arial;
+    color: #444;
+    position: relative;
+}
+
+#container{
+    min-width:800px;
+    width:95%;
+    margin:0 auto;
+    position: relative;
+    padding: 0 8px;
+}
+#main{
+    margin:0 0 -100px;
+    min-height:100%;
+    border-right: solid #ccc 1px;
+    border-left: solid #ccc 1px;
+}
+#all{
+    overflow:hidden;
+    padding:200px 0 100px;
+}
+
+#header{
+    background: #fff;
+    height:200px;
+    position: fixed;
+    min-width:800px;
+    width:95%;
+    top: 0;
+    z-index: 1;
+}
+#top {
+    height: 118px;
+}
+#footer{
+    /*background:#cfc;*/
+    height:100px;
+    position: fixed;
+    min-width:800px;
+    width:95%;
+    bottom: 0;
+    background: #fff;
+}
+#footer:before{
+    content:"";
+    display:block;
+    height: 10px;
+
+    border: solid #ccc 1px;
+    border-top-width: 0;
+    border-radius: 0 0 6px 6px;
+    /*box-shadow: 0 1px 1px #ccc;*/
+    margin: -7px 0 0px;
+}
+
+
+caption {
+    text-align: left;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+}
+
+table {
+    *border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    table-layout:fixed;
+}
+
+.theader {
+    border: solid #ccc 1px;
+    border-radius: 6px 6px 0 0;
+    box-shadow: 0 1px 1px #ccc;
+    height: 62px;
+}
+.theader tr {
+    height: 30px;
+}
+.theader tr:hover {
+    background: #fbf8e9;
+    transition: all 0.1s ease-in-out;
+}
+.theader td, .theader th {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    padding: 0 2px;
+    text-align: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.theader th {
+    background-color: #dce9f9;
+    background-image: linear-gradient(to top, #ebf3fc, #dce9f9);
+    box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
+    border-top: none;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+    text-align: center;
+    text-overflow: ellipsis;
+}
+.theader td:first-child, .theader th:first-child {
+    border-left: none;
+}
+.theader th:first-child {
+    border-radius: 6px 0 0 0;
+}
+.theader th:last-child {
+    border-radius: 0 6px 0 0;
+}
+.theader tr:last-child td:first-child {
+    border-radius: 0 0 0 6px;
+}
+.theader tr:last-child td:last-child {
+    border-radius: 0 0 6px 0;
+}
+.theader .hrow th{
+    border-radius: 0 0 0 0;
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+
+.tdata {
+    border-bottom: 1px solid #ccc;
+}
+.tdata tfoot {
+    display: none;
+}
+.tdata tr:hover {
+    background: hsla(50, 70%, 95%, 1);
+    transition: all 0.1s ease-in-out;
+}
+.tdata tr.rsel { background: hsla(50, 70%, 75%, 1); }
+.tdata td {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    padding: 2px 4px;
+    text-align: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    min-height: 20px;
+}
+.tdata td:first-child {
+    border-left: none;
+    text-align: center;
+}
+.tdata td:first-child+td {
+    text-align: center;
+}
+.tdata td.tdr{
+    text-align: right;
+}
+
+
