@@ -1,5 +1,10 @@
 <?php
+session_start();
+$_SESSION["login"] = 'admin';
 
+//header("Location: /");
+
+/*
     require_once "oop/database_class.php";
     require_once "oop/manage_class.php";
 
@@ -17,5 +22,6 @@
     else exit;
 
     $manage->redirect($r);
+*/
 
 ?>

@@ -23,7 +23,7 @@ class CheckValid {
 	}
 
 	public function validHash($hash){
-		if (!$this->valisString($hash, 32, 32)) return false;
+		if (!$this->validString($hash, 32, 32)) return false;
 		if (!$this->isOnlyLettersAndDigits($hash)) return false;
 		return true;
 	}
@@ -51,7 +51,7 @@ class CheckValid {
 		return true;
 	}
 
-	private function valisString($string, $min_length, $max_length){
+	private function validString($string, $min_length, $max_length){
 		if (!is_string($string)) return false;
 		if (strlen($string) < $min_length) return false;
 		if (strlen($string) > $max_length) return false;

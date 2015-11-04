@@ -8,13 +8,15 @@ class Manage {
 	private $config;
 	private $user;
 	private $data;
+	public $user_info;
 
 	public function __construct($db)
 	{
 		session_start();
 		$this->config = new Config();
-		$this->user = new User();
+		$this->user = new User($db);
 		$this->data = $this->secureData(array_merge($_POST, $_GET));
+		$this->user_info = $this->getUser();
 	}
 
 	private function secureData($data){
@@ -23,6 +25,13 @@ class Manage {
 			else $data[$key] = htmlspecialchars($value);
 		}
 		return $data;
+	}
+
+	private function getUser(){
+		$login = $_SESSION["login"];
+		$password = $_SESSION["password"];
+		if ($this->user->checkUser($login, $password)) return $this->user->getUserOnLogin($login);
+		else return false;
 	}
 
 	public function redirect($link){
@@ -38,7 +47,7 @@ class Manage {
 			return $this->returnMessage("ERROR_CAPTCHA", $link_reg);
 		}
 		$login = $this->data["login"];
-		if ($this->user->isExists($login))
+		if ($this->user->isExistsUser($login))
 			return $this->returnMessage("EXISTS_LOGIN", $link_reg);
 		$password = $this->data["password"];
 		if ($password == "")
@@ -55,13 +64,17 @@ class Manage {
 	public function login(){
 		$login=$this->data["login"];
 		$password=$this->hashPassword($this->data["password"]);
+		//setcookie("login", $login, time()+3600);
 		$r = $_SERVER["HTTP_REFERER"];
 		if ($this->user->checkUser($login, $password)){
 			$_SESSION["login"] = $login;
 			$_SESSION["password"] = $password;
+			unset($_SESSION["error_auth"]);
 			return $r;
 		}
 		else {
+			unset($_SESSION["login"]);
+			unset($_SESSION["password"]);
 			$_SESSION["error_auth"] = 1;
 			return $r;
 		}
@@ -70,6 +83,8 @@ class Manage {
 	public function logout(){
 		unset($_SESSION["login"]);
 		unset($_SESSION["password"]);
+		unset($_SESSION["error_auth"]);
+		session_destroy();
 		return $_SERVER["HTTP_REFERER"];
 	}
 

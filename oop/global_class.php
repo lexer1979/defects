@@ -40,8 +40,8 @@ abstract class GlobalClass {
 		return $this->db->deleteAll($this->table_name);
 	}
 
-	protected function detField($field_out, $field_in, $value_in){
-		return $this->db->detField($this->table_name, $field_out, $field_in, $value_in);
+	protected function getField($field_out, $field_in, $value_in){
+		return $this->db->getField($this->table_name, $field_out, $field_in, $value_in);
 	}
 
 	protected function detFieldOnID($id, $field){

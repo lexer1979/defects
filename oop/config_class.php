@@ -4,11 +4,7 @@ class Config {
 	
 	var $site_name = "Статистика неисправностей оборудования";
 	var $address = "http://uk-tmp.kz/";
-	var $secret = array(
-		'0' => '',
-		'1' => 'sa',
-		'2' => 'usr'
-	);
+	var $secret = '';
 	var $host = "localhost";
 	var $db = "tmp_defects";
 	var $db_prefix = "def_";

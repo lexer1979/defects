@@ -1,5 +1,6 @@
 html{
     overflow-x: hidden;
+    background: #eee;
 }
 html, body, #container{
     height:100%;
@@ -13,46 +14,29 @@ body {
     position: relative;
 }
 
-#container{
+#container, #header, #footer {
+    background: #eee;
     min-width:800px;
     width:95%;
+}
+#container{
     margin:0 auto;
     position: relative;
     padding: 0 8px;
 }
-#main{
-    margin:0 0 -100px;
-    min-height:100%;
-    border-right: solid #ccc 1px;
-    border-left: solid #ccc 1px;
-}
-#all{
-    overflow:hidden;
-    padding:200px 0 100px;
-}
-
 #header{
-    background: #fff;
     height:200px;
     position: fixed;
-    min-width:800px;
-    width:95%;
     top: 0;
     z-index: 1;
 }
-#top {
-    height: 118px;
-}
 #footer{
-    /*background:#cfc;*/
-    height:100px;
+    height:200px;
     position: fixed;
-    min-width:800px;
-    width:95%;
     bottom: 0;
-    background: #fff;
 }
 #footer:before{
+    background: #fff;
     content:"";
     display:block;
     height: 10px;
@@ -60,10 +44,31 @@ body {
     border: solid #ccc 1px;
     border-top-width: 0;
     border-radius: 0 0 6px 6px;
-    /*box-shadow: 0 1px 1px #ccc;*/
-    margin: -7px 0 0px;
+    margin: -6px 0 0px;
+}
+#footer div {
+    padding: 10px 0;
 }
 
+#footer p {
+    padding: 0;
+    margin: 4px 0;
+}
+
+
+#top {
+    height: 118px;
+}
+#main{
+    margin:0 0 -200px;
+    min-height:100%;
+    border-right: solid #ccc 1px;
+    border-left: solid #ccc 1px;
+}
+#all{
+    overflow:hidden;
+    padding:200px 0 200px;
+}
 
 caption {
     text-align: left;
@@ -71,7 +76,6 @@ caption {
     height: 20px;
     line-height: 20px;
 }
-
 table {
     *border-collapse: collapse;
     border-spacing: 0;
@@ -80,6 +84,7 @@ table {
 }
 
 .theader {
+    background: #fff;
     border: solid #ccc 1px;
     border-radius: 6px 6px 0 0;
     box-shadow: 0 1px 1px #ccc;
@@ -131,7 +136,9 @@ table {
 }
 
 .tdata {
+    background: #fff;
     border-bottom: 1px solid #ccc;
+    margin-bottom: 6px;
 }
 .tdata tfoot {
     display: none;
@@ -161,6 +168,10 @@ table {
 }
 .tdata td.tdr{
     text-align: right;
+}
+
+.tform {
+    width:300px;
 }
 
 

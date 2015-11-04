@@ -10,7 +10,7 @@ class User extends GlobalClass {
 	}
 
 	public function addUser($login, $password, $group_id){
-		$password = md5($this->config->secret[$group_id].$password);
+		//$password = md5($password.$this->config->secret);
 		if(!$this->checkValid($login, $password, $group_id)) return false;
 		return $this->add(array(
 			"login" => $login,
@@ -20,7 +20,7 @@ class User extends GlobalClass {
 	}
 
 	public function editUser($id, $login, $password, $group_id){
-		$password = md5($this->config->secret[$group_id].$password);
+		//$password = md5($password.$this->config->secret);
 		if(!$this->checkValid($login, $password, $group_id)) return false;
 		return $this->edit($id, array(
 			"login" => $login,
@@ -32,8 +32,15 @@ class User extends GlobalClass {
 	public function isExists($login){
 		return parent::isExists("login", $login);
 	}
-*/	public function isExistsUser($login){
+*/
+	public function isExistsUser($login){
 		return $this->isExists("login", $login);
+	}
+
+	public function checkUser($login, $password){
+		$user = $this->getUserOnLogin($login);
+		if (!$user) return false;
+		return $user["password"] === $password;
 	}
 
 	public function getUserOnLogin($login){
