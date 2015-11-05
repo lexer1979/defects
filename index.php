@@ -37,7 +37,7 @@ $password = $manager->user_info["password"];
     <meta charset="utf-8">
     <title>Авторизация | Статистика неисправностей оборудования</title>
     <link rel="stylesheet" href="css/style.css"">
-    <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="js/jquery.cookie.js"></script>
 
     <script type="text/javascript">
@@ -95,7 +95,7 @@ $password = $manager->user_info["password"];
     <meta charset="utf-8">
     <title>Статистика неисправностей оборудования</title>
     <link rel="stylesheet" href="css/main.css">
-    <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="js/jquery.cookie.js"></script>
 
     <script type="text/javascript">
@@ -118,6 +118,27 @@ $password = $manager->user_info["password"];
                     $("button").removeProp('disabled');
                 }
             });
+            $("#newRow").click(function(e){
+                $("#add_dialog").fadeIn(100);
+                e.preventDefault();
+            });
+            $("#insRow").click(function(e){
+                $("input[name=method]").val("ins");
+                $("#add_dialog .add_dialog h2").text("Добавление неисправности");
+                $("#add_dialog").fadeIn(100);
+                e.preventDefault();
+            });
+            $("#updRow").click(function(e){
+                $("input[name=method]").val("upd");
+                $("#add_dialog .add_dialog h2").text("Изменение неисправности");
+                $("#add_dialog").fadeIn(100);
+                e.preventDefault();
+            });
+
+            $("form[name=form_add] .cancel").click(function(e){
+                $("#add_dialog").fadeOut(100);
+                e.preventDefault();
+            });
 
             $(window).on("onunload", function(){
                 $.cookie('PHPSESSID', null);
@@ -132,6 +153,8 @@ $password = $manager->user_info["password"];
     <div id="header">
         <div id="top">
             <a href="/?logout=1">Выход</a>
+            <button id="insRow">Добавить</button>
+            <button id="updRow">Изменить</button>
         </div>
 
         <table class="theader">
@@ -211,7 +234,6 @@ HTML;
 
     echo $tr;
 }
-   // session_destroy();
 }
 ?>
 
@@ -219,6 +241,7 @@ HTML;
         </div>
     </div>
     <div id="footer">
+        <video src="/uploads/1.mp4" controls></video>
         <div>
             <label for="fview1">Просмотр</label><input name="fview" type="radio" value="1" id="fview1" checked>
             <label for="fview2">Редактирование</label><input name="fview" type="radio" value="2" id="fview2">
@@ -256,6 +279,47 @@ HTML;
                 </table>
 
             </form>
+        </div>
+
+    </div>
+    <div id="add_dialog">
+        <div class="add_dialog">
+            <h2>Добавление неисправности</h2>
+        <form name="form_add" action="/" method="post">
+            <table class="tform">
+                <tr>
+                    <td><label for="fdate">Дата: </label></td>
+                    <td>
+                        <input type="date" id="fdate" value="2015-02-12" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="fdep">Служба / отдел: </label></td>
+                    <td>
+                        <input name="fdep" list="dep" />
+                        <datalist id="dep">
+                            <option label="Технологи" value="Технологи" />
+                            <option label="Энергетики" value="Служба энергетика" />
+                            <option label="Механики" value="Служба механика" />
+                            <option label="Электрики" value="Служба электрика" />
+                        </datalist>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="fnaim">Наименование: </label></td>
+                    <td>
+                        <input type="text" id="fnaim"  />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button>ОК</button>
+                        <button class="cancel">Отмена</button>
+                    </td>
+                </tr>
+            </table>
+            <input type="hidden" name="method" value="ins">
+        </form>
         </div>
     </div>
 </div>

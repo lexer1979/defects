@@ -8,3 +8,5 @@ logs/
 upload/audio/*.mp3
 
 *.jpg
+
+uploads/
