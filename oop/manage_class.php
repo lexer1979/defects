@@ -2,21 +2,45 @@
 
 require_once "config_class.php";
 require_once "user_class.php";
+require_once "dictionary_classes.php";
 
 class Manage {
 
 	private $config;
-	private $user;
 	private $data;
+	private $user;
+	public $users;
 	public $user_info;
+	public $department;
+	public $departments;
+	public $equipment_name;
+	public $equipment_names;
+	public $equipment_type;
+	public $equipment_types;
+	public $equipment_object;
+	public $equipment_objects;
+	public $unit;
+	public $units;
 
 	public function __construct($db)
 	{
 		session_start();
 		$this->config = new Config();
-		$this->user = new User($db);
 		$this->data = $this->secureData(array_merge($_POST, $_GET));
+		$this->user = new User($db);
+		$this->users = $this->getAllUsers();
 		$this->user_info = $this->getUser();
+
+		$this->department = new Department($db);
+		$this->departments = $this->getAllDepartments();
+		$this->equipment_name = new EquipmentName($db);
+		$this->equipment_names = $this->getAllEquipmentNames();
+		$this->equipment_type = new EquipmentType($db);
+		$this->equipment_types = $this->getAllEquipmentTypes();
+		$this->equipment_object = new EquipmentObject($db);
+		$this->equipment_objects = $this->getAllEquipmentObjects();
+		$this->unit = new Unit($db);
+		$this->units = $this->getAllUnits();
 	}
 
 	private function secureData($data){
@@ -32,6 +56,38 @@ class Manage {
 		$password = $_SESSION["password"];
 		if ($this->user->checkUser($login, $password)) return $this->user->getUserOnLogin($login);
 		else return false;
+	}
+
+	private function getAllUsers(){
+		$users = $this->user->getAllUsers();
+		if (!is_array($users) || count($users)==0) return false;
+		return $users;
+	}
+
+	private function getAllDepartments(){
+		$dict = $this->department->getAllRecords();
+		if (!is_array($dict) || count($dict)==0) return false;
+		return $dict;
+	}
+	private function getAllEquipmentNames(){
+		$dict = $this->equipment_name->getAllRecords();
+		if (!is_array($dict) || count($dict)==0) return false;
+		return $dict;
+	}
+	private function getAllEquipmentTypes(){
+		$dict = $this->equipment_type->getAllRecords();
+		if (!is_array($dict) || count($dict)==0) return false;
+		return $dict;
+	}
+	private function getAllEquipmentObjects(){
+		$dict = $this->equipment_object->getAllRecords();
+		if (!is_array($dict) || count($dict)==0) return false;
+		return $dict;
+	}
+	private function getAllUnits(){
+		$dict = $this->unit->getAllRecords();
+		if (!is_array($dict) || count($dict)==0) return false;
+		return $dict;
 	}
 
 	public function redirect($link){

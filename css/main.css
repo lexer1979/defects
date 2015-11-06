@@ -6,7 +6,7 @@ z-index: 3;
 
 html{
     overflow-x: hidden;
-    background: #eee;
+    /*background: #eee;*/
 }
 html, body, #container{
     height:100%;
@@ -15,11 +15,37 @@ html, body, #container{
 }
 
 body {
-    font: normal 12px 'trebuchet MS', 'Lucida sans', Arial;
+    /*background: #0ca3d2;*/
+    background: #eee;
     color: #444;
+    font: normal 12px 'trebuchet MS', 'Lucida sans', Arial;
     position: relative;
 }
 
+#logo {
+    display: block;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 120px;
+    width: 120px;
+    background: transparent url(../images/uktmp.svg) no-repeat top right;
+    background-size: 100% 100%;
+    opacity: 0.75;
+}
+#logo:hover{opacity: 1;}
+#designer_info {
+    display: block;
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+#designer_info p {
+    color: #666;
+    text-align: right;
+}
 #add_dialog {
     position: fixed;
     height: 100%;
@@ -60,7 +86,9 @@ body {
 
 
 #container, #header, #footer {
-    background: #eee;
+    /*background: #eee;
+    background: #0ca3d2;*/
+    background: inherit;
     min-width:800px;
     width:95%;
 }
@@ -70,13 +98,14 @@ body {
     padding: 0 8px;
 }
 #header{
-    height:200px;
+    position: relative;
+    height:210px;
     position: fixed;
     top: 0;
     z-index: 1;
 }
 #footer{
-    height:200px;
+    height:80px;
     position: fixed;
     bottom: 0;
 }
@@ -102,24 +131,27 @@ body {
 
 
 #top {
-    height: 118px;
+    height: 90px;
 }
 #main{
-    margin:0 0 -200px;
+    background: #fff;
+    margin:0 0 -80px;
     min-height:100%;
     border-right: solid #ccc 1px;
     border-left: solid #ccc 1px;
 }
 #all{
+    background: inherit;
     overflow:hidden;
-    padding:200px 0 200px;
+    padding:210px 0 80px;
 }
 
 caption {
     text-align: left;
-    font-weight: bold;
-    height: 20px;
-    line-height: 20px;
+    font-size: 16px;
+    font-weight: normal;
+    height: 27px;
+    line-height: 27px;
 }
 table {
     *border-collapse: collapse;
@@ -135,12 +167,11 @@ table {
     box-shadow: 0 1px 1px #ccc;
     height: 62px;
 }
-.theader tr {
+.theader thead tr {
     height: 30px;
 }
-.theader tr:hover {
-    background: #fbf8e9;
-    transition: all 0.1s ease-in-out;
+.theader tbody tr {
+    height: 30px;
 }
 .theader td, .theader th {
     border-left: 1px solid #ccc;
@@ -159,6 +190,23 @@ table {
     text-align: center;
     text-overflow: ellipsis;
 }
+.theader tbody td{
+    background: #f9f9f9;
+    padding: 0;
+    margin: 0;
+}
+.theader tbody td input, .theader tbody td select{
+    font: normal 12px 'trebuchet MS', 'Lucida sans', Arial;
+    border: 0;
+    outline: 0;
+    box-sizing: border-box;
+    height: 30px;
+    width: 100%;
+    padding: 4px;
+    text-overflow: ellipsis;
+    text-align: inherit;
+    appearance:textfield
+}
 .theader td:first-child, .theader th:first-child {
     border-left: none;
 }
@@ -168,12 +216,12 @@ table {
 .theader th:last-child {
     border-radius: 0 6px 0 0;
 }
-.theader tr:last-child td:first-child {
+/*.theader tr:last-child td:first-child {
     border-radius: 0 0 0 6px;
 }
 .theader tr:last-child td:last-child {
     border-radius: 0 0 6px 0;
-}
+}*/
 .theader .hrow th{
     border-radius: 0 0 0 0;
     border-left: 1px solid #ccc;
@@ -181,18 +229,18 @@ table {
 }
 
 .tdata {
-    background: #fff;
+    background: inherit;
     border-bottom: 1px solid #ccc;
     margin-bottom: 6px;
 }
 .tdata tfoot {
     display: none;
 }
-.tdata tr:hover {
+.tdata tbody tr:hover {
     background: hsla(50, 70%, 95%, 1);
     transition: all 0.1s ease-in-out;
 }
-.tdata tr.rsel { background: hsla(50, 70%, 75%, 1); }
+.tdata tbody tr.rsel { background: hsla(50, 70%, 75%, 1); }
 .tdata td {
     border-left: 1px solid #ccc;
     border-top: 1px solid #ccc;
@@ -208,10 +256,10 @@ table {
     font-size: 10px;
     color: #999;
 }
-.tdata td:first-child+td {
+.tdata td:first-child+td, .theader td:first-child+td {
     text-align: center;
 }
-.tdata td.tdr{
+.tdata td.tdr, .theader td.tdr {
     text-align: right;
 }
 

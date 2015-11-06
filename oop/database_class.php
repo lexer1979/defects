@@ -59,7 +59,7 @@ class DataBase {
 		return $data;
 	}
 
-	public function insert($table_name, $new_values) {
+	public function insert($table_name, $new_values, &$id) {
 		$table_name = $this->config->db_prefix.$table_name;
 		$query = "INSERT INTO $table_name (";
 		foreach($new_values as $field => $value) $query .= "`$field`,";
@@ -68,7 +68,9 @@ class DataBase {
 		foreach($new_values as $value) $query .= "'".addslashes($value)."',";
 		$query = substr($query, 0, -1);
 		$query .= ")";
-		return $this->query($query);
+		$res = $this->query($query);
+		$id = $this->mysqli->insert_id;
+		return $res;
 	}
 
 	public function update($table_name, $upd_fields, $where){
@@ -98,15 +100,17 @@ class DataBase {
 		return $this->query($query);
 	}
 
-	public function getField($table_name, $field_out, $field_in, $value_in){
-		$data = $this->select($table_name, array($field_out), "`$field_in`='".addslashes($value_in)."'");
+	public function getField($table_name, $field_out, $field_in, $value_in, $to_lower = false){
+		if ($to_lower === false) $where = "`$field_in`='".addslashes($value_in)."'";
+		else $where = "LOWER(`$field_in`)=LOWER('".addslashes($value_in)."')";
+		$data = $this->select($table_name, array($field_out), $where);
 		if (count($data) != 1) return false;
 		return $data[0][$field_out];
 	}
 
-	public function getFieldOnID($table_name, $id, $field_out){
+	public function getFieldOnID($table_name, $id, $field_out, $to_lower = false){
 		if(!$this->existsID($table_name, $id)) return false;
-		return $this->getField($table_name, $field_out, "id", $id);
+		return $this->getField($table_name, $field_out, "id", $id, $to_lower);
 	}
 
 	public function getAll($table_name, $order, $up){

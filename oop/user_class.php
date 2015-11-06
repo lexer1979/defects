@@ -54,6 +54,10 @@ class User extends GlobalClass {
 		if (!$this->valid->validTimeStamp($group_id)) return false;
 		return true;
 	}
+
+	public function getAllUsers(){
+		return $this->getAll('login');
+	}
 }
 
 ?>

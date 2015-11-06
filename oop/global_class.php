@@ -10,6 +10,7 @@ abstract class GlobalClass {
 	private $table_name;
 	protected $config;
 	protected $valid;
+	protected $insert_id;
 
 	protected function __construct($table_name, $db) {
 		$this->db = $db;
@@ -23,9 +24,12 @@ abstract class GlobalClass {
 	{
 	}
 
+	public function getInsertID(){
+		return $this->insert_id;
+	}
 
 	protected function add($new_values){
-		return $this->db->insert($this->table_name, $new_values);
+		return $this->db->insert($this->table_name, $new_values, $this->insert_id);
 	}
 
 	protected function edit($id, $upd_values){
@@ -40,12 +44,12 @@ abstract class GlobalClass {
 		return $this->db->deleteAll($this->table_name);
 	}
 
-	protected function getField($field_out, $field_in, $value_in){
-		return $this->db->getField($this->table_name, $field_out, $field_in, $value_in);
+	protected function getField($field_out, $field_in, $value_in, $to_lower = false){
+		return $this->db->getField($this->table_name, $field_out, $field_in, $value_in, $to_lower);
 	}
 
-	protected function detFieldOnID($id, $field){
-		return $this->db->detFieldOnID($this->table_name, $id, $field);
+	protected function getFieldOnID($id, $field, $to_lower = false){
+		return $this->db->getFieldOnID($this->table_name, $id, $field, $to_lower);
 	}
 
 	protected function setFieldOnID($id, $field, $value){

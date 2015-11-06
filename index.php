@@ -4,9 +4,21 @@ session_start();
 
 require_once "oop/database_class.php";
 require_once "oop/manage_class.php";
+require_once "oop/dictionary_classes.php";
+
 
 $db = new DataBase();
 $manager = new Manage($db);
+
+//print_r($department->getDepartmentOnName('Служба ЭНергетик1а'));
+//$manager->department->deleteAll();
+//$d = $manager->department->checkRecord('Технологи311');
+//print_r($d);
+//echo $d['name'];
+//print_r($manager->units);
+
+
+exit;
 
 if ($_REQUEST["logout"]){
     $manager->logout();
@@ -25,10 +37,15 @@ if ($_POST["auth"]) {
     exit;
 }
 
-$login = $_COOKIE["login"];
-if (!isset($login))
-    $login = $manager->user_info["login"];
-$login = trim($login);
+$last_login = $_COOKIE["last_login"];
+if (!$last_login)
+    $last_login = $manager->user_info["login"];
+$last_login = trim($last_login);
+$hdelta = 3600*6*0;
+$hdays = 3600 * 24 * 7;
+setcookie("last_login", $last_login, time() + $hdelta + $hdays);
+//echo date('H:i:s', time());
+
 $password = $manager->user_info["password"];
 ?>
 <?php if(!$manager->user_info) { ?>
@@ -36,36 +53,56 @@ $password = $manager->user_info["password"];
 <head>
     <meta charset="utf-8">
     <title>Авторизация | Статистика неисправностей оборудования</title>
-    <link rel="stylesheet" href="css/style.css"">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
     <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
+<?php if($error_auth) { ?>
+           $("#alert").fadeOut(0).fadeIn(100, function(){
+                $(this).effect('bounce');
+                $("#b_close_alert").focus();
+           });
+<?php } else { ?>
+           $("body").fadeOut(0).fadeIn(1000);
+<?php } ?>
+
+            if ($("input[name=login]").val().trim() == "") $("input[name=login]").focus().select();
+            else $("input[name=password]").focus().select();
+
             $("#b_close_alert").on("click", function(){
                 $("#blackout").fadeOut(100);
                 $("#alert").fadeOut(250);
-                var l = $("input[name=login]");
-                if (l.val().trim() == "") l.focus().select();
-                else $("input[name=password]").focus();
+                if ($("input[name=login]").val().trim() == "") $("input[name=login]").focus().select();
+                else $("input[name=password]").focus().select();
             });
 
             $("#fauth").submit(function(e){
                 //e.preventDefault();
-                $.cookie('login', $("input[name=login]").val().trim());
+                //$.cookie('last_login', $("input[name=login]").val().trim());
+                $.cookie('last_login', $("input[name=login]").val().trim(), { expires: 7 });
             });
-            $(window).on("onunload", function(){
+
+            $("#alert").draggable({ containment: 'document' });
+            $( ".login" ).draggable({ handle: 'h1' });
+            $( ".login h1" ).disableSelection().css({ cursor: 'move'});
+
+            function clearCookies(){
                 $.cookie('PHPSESSID', null);
-                //$.cookie('login', null);
-            });
-
-
+                //$.cookie('last_login', null);
+                //$.cookie('last_login', $.cookie('last_login'), { expires: 7 });
+            }
+            $(window).on("onunload", clearCookies);
+            //$(window).beforeunload = clearCookies;
         });
     </script>
-
 </head>
 <body>
 <div id="logo"></div>
+<div id="designer_info"><p>&copy; Разработчик:<br>инженер-системотехник цеха №1 АО «УК ТМК»<br><b>Худяков Ал.П., тел.: 35-84</b></p></div>
 <?php if($error_auth) { ?>
 <div id="blackout"></div>
 <?php } ?>
@@ -77,13 +114,20 @@ $password = $manager->user_info["password"];
     </div>
 <?php } ?>
     <div class="login">
-        <h1>Авторизация</h1>
-        <form id="fauth" name="form_auth" method="post" action="/" enctype="application/x-www-form-urlencoded">
-            <p><input type="text" name="login" value="<?=$login?>" placeholder="Логин" pattern="[а-яА-Яa-zA-Z0-9\. ]+" autocomplete="on" required ></p>
-            <p><input type="password" name="password" value="<?=$password?>" placeholder="Пароль" required></p>
-            <p class="submit"><input type="submit" value="Войти"></p>
-            <input type="hidden" name="auth" value="1">
-        </form>
+        <div>
+            <h1>Авторизация</h1>
+            <form id="fauth" name="form_auth" method="post" action="/" enctype="application/x-www-form-urlencoded">
+                <p><input type="text" name="login" value="<?=$last_login?>" list="dl_logins" placeholder="Имя пользователя" pattern="[а-яА-Яa-zA-Z0-9\. ]+" autocomplete="off" required ></p>
+                <datalist id="dl_logins">
+<?php if(is_array($manager->users)) foreach($manager->users as $key => $value)
+                            echo "<option label=\"$value[login]\" value=\"$value[login]\" \/>";
+?>
+                </datalist>
+                <p><input type="password" name="password" value="<?=$password?>" placeholder="Пароль" required></p>
+                <p class="submit"><input type="submit" value="Войти"><a href="#" onclick="window.close()" title="Закрыть окно">Отмена</a></p>
+                <input type="hidden" name="auth" value="1">
+            </form>
+        </div>
     </div>
 </section>
 </body>
@@ -95,12 +139,32 @@ $password = $manager->user_info["password"];
     <meta charset="utf-8">
     <title>Статистика неисправностей оборудования</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
     <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+    <!--<script type="text/javascript" src="js/jquery.damnUploader.min.js"></script>-->
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $(".tdata tr").click(function(){
+
+            $('#form-with-files').submit(function(e) {
+                if ($.support.fileSending) {
+                    // if browser supports, start uploading by plugin
+                    $fileInput.duStart();
+                    e.preventDefault();
+                }
+                // else - form will be sended on default handler, defined in it's "action" attribute
+            });
+
+            function rowSelect(row, rows){
+                var elems = $("#rowNum span");
+                elems.eq(0).text(rows.index(row)+1);
+                elems.eq(1).text(rows.size());
+            }
+
+            $(".tdata tbody tr").click(function(){
+                rowSelect($(this), $(".tdata tbody tr"));
                 if (!$(this).hasClass('rsel')) {
                     $(".tdata tr").removeClass("rsel");
                     $(this).addClass('rsel');
@@ -128,7 +192,35 @@ $password = $manager->user_info["password"];
                 $("#add_dialog").fadeIn(100);
                 e.preventDefault();
             });
+            function funcB(){
+                alert("before");
+            }
+            $(document).ajaxStart(function(){
+                alert('start');
+            });
+
+            $(document).ajaxComplete(function(){
+                alert('complete');
+            });
+
             $("#updRow").click(function(e){
+                $.ajax({
+                    url: "add1.php",
+                    type: "POST",
+                    data: ({a: 5, b: "str"}),
+                    dataType: "json",
+                    beforeSend: funcB,
+                    success: function (data){
+                        $.each(data, function(key, val) {
+                            alert(key+'='+val);
+                        });
+                        //alert(data.a+data.b);
+                    },
+                    error: function(msg) {
+                        alert('Ошибка!'+msg);
+                    },
+                });
+                return false;
                 $("input[name=method]").val("upd");
                 $("#add_dialog .add_dialog h2").text("Изменение неисправности");
                 $("#add_dialog").fadeIn(100);
@@ -140,10 +232,13 @@ $password = $manager->user_info["password"];
                 e.preventDefault();
             });
 
-            $(window).on("onunload", function(){
+            function clearCookies(){
                 $.cookie('PHPSESSID', null);
-                //$.cookie('login', null);
-            });
+                //$.cookie('last_login', null);
+                //$.cookie('last_login', $.cookie('last_login'), { expires: 7 });
+            }
+
+            $(window).on("onunload", clearCookies);
 
         });
     </script>
@@ -151,6 +246,7 @@ $password = $manager->user_info["password"];
 <body>
 <div id="container">
     <div id="header">
+        <div id="logo"></div>
         <div id="top">
             <a href="/?logout=1">Выход</a>
             <button id="insRow">Добавить</button>
@@ -158,7 +254,7 @@ $password = $manager->user_info["password"];
         </div>
 
         <table class="theader">
-            <caption>Статистика неисправностей оборудования</caption>
+            <caption><b>Статистика неисправностей оборудования.</b> Цех №1. АО «УК ТМК»</caption>
             <col span="1" width="2%">
             <col span="1" width="5%">
             <col span="1" width="10%">
@@ -183,6 +279,20 @@ $password = $manager->user_info["password"];
                 <th>Установка</th>
             </tr>
             </thead>
+            <tbody>
+            <tr>
+                <td></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td class="tdr"><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+            </tr>
+            </tbody>
         </table>
     </div>
     <div id="main">
@@ -198,16 +308,7 @@ $password = $manager->user_info["password"];
 
                 <tfoot>
                 <tr>
-                    <td>Итого:</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td colspan="10">Нет данных</td>
                 </tr>
                 </tfoot>
                 <tbody>
@@ -218,7 +319,7 @@ if (isset($_SESSION["login"])) {
 for($i=0;$i<100;$i++) {
     $j = $i + 1;
     $tr = <<<HTML
-<tr>
+                    <tr>
                         <td title="$i">$j</td>
                         <td>07.12.2013</td>
                         <td>Служба электрика</td>
@@ -241,46 +342,9 @@ HTML;
         </div>
     </div>
     <div id="footer">
-        <video src="/uploads/1.mp4" controls></video>
-        <div>
-            <label for="fview1">Просмотр</label><input name="fview" type="radio" value="1" id="fview1" checked>
-            <label for="fview2">Редактирование</label><input name="fview" type="radio" value="2" id="fview2">
-            <form action="/" method="get">
-                <table class="tform">
-                    <tr>
-                        <td><label for="fdate">Дата: </label></td>
-                        <td>
-                            <input type="date" id="fdate" value="2015-02-12" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label for="fdep">Служба / отдел: </label></td>
-                        <td>
-                            <input name="fdep" list="dep" />
-                            <datalist id="dep">
-                                <option label="Технологи" value="Технологи" />
-                                <option label="Энергетики" value="Служба энергетика" />
-                                <option label="Механики" value="Служба механика" />
-                                <option label="Электрики" value="Служба электрика" />
-                            </datalist>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label for="fnaim">Наименование: </label></td>
-                        <td>
-                            <input type="text" id="fnaim"  />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <button>Добавить</button>
-                        </td>
-                    </tr>
-                </table>
-
-            </form>
-        </div>
-
+        <!--<video src="/uploads/1.mp4" controls></video>-->
+        <div id="rowNum">Запись: <b><span>0</span></b> из <span>0</span></div>
+        <div id="designer_info"><p>&copy; Разработчик:<br>инженер-системотехник цеха №1 АО «УК ТМК»<br><b>Худяков Ал.П., тел.: 35-84</b></p></div>
     </div>
     <div id="add_dialog">
         <div class="add_dialog">
@@ -288,7 +352,7 @@ HTML;
         <form name="form_add" action="/" method="post">
             <table class="tform">
                 <tr>
-                    <td><label for="fdate">Дата: </label></td>
+                    <td><label for="fdate">Дата1: </label></td>
                     <td>
                         <input type="date" id="fdate" value="2015-02-12" />
                     </td>

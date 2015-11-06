@@ -19,7 +19,7 @@ class CheckValid {
 	public function validLogin($login){
 		if ($this->isContainQuotes($login)) return false;
 		if (preg_match("/^\d*$/", $login)) return false;
-		return $this->valisString($login, $this->config->min_login, $this->config->max_login);
+		return $this->validString($login, $this->config->min_login, $this->config->max_login);
 	}
 
 	public function validHash($hash){
@@ -30,6 +30,10 @@ class CheckValid {
 
 	public function validTimeStamp($time){
 		return $this->isNoNegativeInteger($time);
+	}
+
+	public function validName($name){
+		return $this->validString($name, 0, 255);
 	}
 
 	private function isIntNumber($number)
