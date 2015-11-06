@@ -16,10 +16,14 @@ $manager = new Manage($db);
 //print_r($d);
 //echo $d['name'];
 //print_r($manager->units);
-
+/*
+$manager->defect->addRecord(
+    date('Y/m/d', time()),
+    1,2,3,4,5,6,'7','8',9
+);
 
 exit;
-
+*/
 if ($_REQUEST["logout"]){
     $manager->logout();
     header("Location: /");

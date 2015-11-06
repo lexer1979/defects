@@ -3,12 +3,15 @@
 require_once "config_class.php";
 require_once "user_class.php";
 require_once "dictionary_classes.php";
+require_once "defect_class.php";
 
 class Manage {
 
 	private $config;
 	private $data;
-	private $user;
+	public $defect;
+	public $defects;
+	public $user;
 	public $users;
 	public $user_info;
 	public $department;
@@ -41,6 +44,10 @@ class Manage {
 		$this->equipment_objects = $this->getAllEquipmentObjects();
 		$this->unit = new Unit($db);
 		$this->units = $this->getAllUnits();
+
+		$this->defect = new Defect($db);
+		$this->defects = $this->getAllDefects();
+
 	}
 
 	private function secureData($data){
@@ -58,36 +65,42 @@ class Manage {
 		else return false;
 	}
 
+	private function getAllDefects(){
+		$rows = $this->defect->getAllRecords();
+		if (!is_array($rows) || count($rows)==0) return false;
+		return $rows;
+	}
+
 	private function getAllUsers(){
-		$users = $this->user->getAllUsers();
+		$users = $this->user->getAllRecords();
 		if (!is_array($users) || count($users)==0) return false;
 		return $users;
 	}
 
 	private function getAllDepartments(){
-		$dict = $this->department->getAllRecords();
-		if (!is_array($dict) || count($dict)==0) return false;
-		return $dict;
+		$rows = $this->department->getAllRecords();
+		if (!is_array($rows) || count($rows)==0) return false;
+		return $rows;
 	}
 	private function getAllEquipmentNames(){
-		$dict = $this->equipment_name->getAllRecords();
-		if (!is_array($dict) || count($dict)==0) return false;
-		return $dict;
+		$rows = $this->equipment_name->getAllRecords();
+		if (!is_array($rows) || count($rows)==0) return false;
+		return $rows;
 	}
 	private function getAllEquipmentTypes(){
-		$dict = $this->equipment_type->getAllRecords();
-		if (!is_array($dict) || count($dict)==0) return false;
-		return $dict;
+		$rows = $this->equipment_type->getAllRecords();
+		if (!is_array($rows) || count($rows)==0) return false;
+		return $rows;
 	}
 	private function getAllEquipmentObjects(){
-		$dict = $this->equipment_object->getAllRecords();
-		if (!is_array($dict) || count($dict)==0) return false;
-		return $dict;
+		$rows = $this->equipment_object->getAllRecords();
+		if (!is_array($rows) || count($rows)==0) return false;
+		return $rows;
 	}
 	private function getAllUnits(){
-		$dict = $this->unit->getAllRecords();
-		if (!is_array($dict) || count($dict)==0) return false;
-		return $dict;
+		$rows = $this->unit->getAllRecords();
+		if (!is_array($rows) || count($rows)==0) return false;
+		return $rows;
 	}
 
 	public function redirect($link){

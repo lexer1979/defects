@@ -55,7 +55,7 @@ class User extends GlobalClass {
 		return true;
 	}
 
-	public function getAllUsers(){
+	public function getAllRecords(){
 		return $this->getAll('login');
 	}
 }
